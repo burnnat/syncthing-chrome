@@ -1,27 +1,24 @@
 {
-  "name": "chrome-extension-typescript-starter",
-  "version": "1.0.0",
-  "description": "chrome-extension-typescript-starter",
-  "main": "index.js",
-  "scripts": {
-    "build": "./node_modules/.bin/webpack",
-    "watch": "./node_modules/.bin/webpack -w"
-  },
-  "author": "",
-  "license": "ISC",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/chibat/chrome-extension-typescript-starter.git"
-  },
-  "dependencies": {
-    "jquery": "~3.2.1",
-    "moment": "~2.18.1"
-  },
-  "devDependencies": {
-    "@types/chrome": "~0.0.47",
-    "@types/jquery": "~3.2.6",
-    "ts-loader": "~2.2.2",
-    "typescript": "~2.4.1",
-    "webpack": "~3.1.0"
-  }
+	"name": "syncthing-chrome",
+	"version": "0.0.1",
+	"description": "A ChromeOS filesystem to browse files shared via Syncthing.",
+	"main": "lib/index.js",
+	"scripts": {
+		"build": "./node_modules/.bin/webpack",
+		"watch": "node watch.js"
+	},
+	"author": "Nat Burns",
+	"license": "MPL-2.0",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/burnnat/syncthing-chrome.git"
+	},
+	"dependencies": {},
+	"devDependencies": {
+		"@types/chrome": "~0.0.47",
+		"@types/jquery": "~3.2.6",
+		"ts-loader": "~2.2.2",
+		"typescript": "~2.4.1",
+		"webpack": "~3.1.0"
+	}
 }

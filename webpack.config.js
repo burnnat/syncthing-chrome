@@ -1,40 +1,43 @@
 const webpack = require("webpack");
 const path = require('path');
 
-module.exports = {
-    entry: {
-        popup: path.join(__dirname, 'src/popup.ts'),
-        options: path.join(__dirname, 'src/options.ts'),
-        content_script: path.join(__dirname, 'src/content_script.ts'),
-        background: path.join(__dirname, 'src/background.ts'),
-        vendor: ['moment', 'jquery']
-    },
-    output: {
-        path: path.join(__dirname, 'dist/js'),
-        filename: '[name].js'
-    },
-    module: {
-        loaders: [{
-            exclude: /node_modules/,
-            test: /\.tsx?$/,
-            loader: 'ts-loader'
-        }]
-    },
-    resolve: {
-        extensions: ['.ts', '.tsx', '.js']
-    },
-    plugins: [
+const environment = process.env.NODE_ENV || 'development';
+const isDevelopment = environment === 'development';
 
-        // pack common vender files
-        new webpack.optimize.CommonsChunkPlugin({
-            name: 'vendor', 
-            minChunks: Infinity
-        }),
+const resolve = (relative) => path.resolve(__dirname, relative);
 
-        // exclude locale files in moment
-        new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+const paths = {
+	source: resolve('src'),
+	output: resolve('dist/js')
+}
 
-        // minify
-        // new webpack.optimize.UglifyJsPlugin()
-    ]
+const config = {
+	context: paths.source,
+	entry: {
+		background: './app/background.ts'
+	},
+	output: {
+		path: paths.output,
+		filename: '[name].js'
+	},
+	module: {
+		loaders: [{
+			exclude: /node_modules/,
+			test: /\.tsx?$/,
+			loader: 'ts-loader'
+		}]
+	},
+	resolve: {
+		extensions: ['.ts', '.tsx', '.js']
+	},
+	plugins: []
 };
+
+if (isDevelopment) {
+	config.devtool = 'cheap-module-source-map';
+}
+else {
+	config.plugins.push(new webpack.optimize.UglifyJsPlugin());
+}
+
+module.exports = config;
