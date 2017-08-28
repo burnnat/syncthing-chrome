@@ -10,5 +10,10 @@
 	},
 	"icons": {
 		"16": "icon.png"
+	},
+	"sockets": {
+		"tcp": {
+			"connect": "*"
+		}
 	}
 }
