@@ -11,7 +11,7 @@ const toArrayBuffer = (buffer: forge.util.ByteStringBuffer): ArrayBuffer => {
 	return data.buffer;
 };
 
-const toByteString = (buffer: ArrayBuffer): string => String.fromCharCode.apply(null, buffer);
+const toByteString = (buffer: ArrayBuffer): string => String.fromCharCode.apply(null, Array.prototype.slice.apply(new Uint8Array(buffer)));
 
 export class TlsSocket {
 	socketId: number;
@@ -149,7 +149,11 @@ export class TlsSocket {
 		const buffer = info.data;
 		this.log(`Received ${buffer.byteLength} bytes of data`);
 
-		this.tls.process(toByteString(buffer));
+		const remaining = this.tls.process(toByteString(buffer));
+
+		if (remaining > 0) {
+			this.log(`Anticipating ${remaining} more bytes`);
+		}
 	}
 
 	private onReceiveError(info: chrome.sockets.tcp.ReceiveErrorEventArgs) {
@@ -180,6 +184,10 @@ export class TlsSocket {
 	private tlsDataReady(connection: forge.tls.TlsConnection) {
 		const bytes = connection.tlsData;
 		const total = bytes.length();
+
+		if (this.socketId === null || total === 0) {
+			return;
+		}
 
 		this.log(`Sending ${total} bytes of data`);
 
@@ -219,7 +227,7 @@ export class TlsSocket {
 	}
 
 	protected error(connection: forge.tls.TlsConnection, error: forge.tls.TlsError) {
-		this.emitError('TLS error: ${error.message}');
+		this.emitError(`TLS error: ${error.message}`);
 		this.closeInternal();
 	}
 }

@@ -21,14 +21,31 @@ const config = {
 		filename: '[name].js'
 	},
 	module: {
-		loaders: [{
-			exclude: /node_modules/,
-			test: /\.tsx?$/,
-			loader: 'ts-loader'
-		}]
+		rules: [
+			{
+				exclude: /node_modules/,
+				test: /\.tsx?$/,
+				loader: 'ts-loader'
+			},
+			{
+				test: require.resolve('node-forge/lib/tls'),
+				loader: 'inject-loader',
+				options: {
+					append: (
+						'forge.tls.internal = tls;\n' +
+						'forge.tls.handlers = hsTable;\n'
+					)
+				}
+			}
+		]
 	},
 	resolve: {
 		extensions: ['.ts', '.tsx', '.js']
+	},
+	resolveLoader: {
+		alias: {
+			'inject-loader': '../loaders/inject-loader.js'
+		}
 	},
 	plugins: []
 };
