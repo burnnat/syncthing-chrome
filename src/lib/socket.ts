@@ -13,13 +13,19 @@ const toArrayBuffer = (buffer: forge.util.ByteStringBuffer): ArrayBuffer => {
 
 const toByteString = (buffer: ArrayBuffer): string => String.fromCharCode.apply(null, Array.prototype.slice.apply(new Uint8Array(buffer)));
 
+interface SocketListeners {
+	onClose?();
+}
+
 export class TlsSocket {
 	socketId: number;
 	tls: forge.tls.TlsConnection;
+	listeners: SocketListeners;
 
-	constructor() {
+	constructor(listeners?: SocketListeners) {
 		this.socketId = null;
 		this.tls = null;
+		this.listeners = listeners;
 
 		// Chrome callbacks
 		this.onConnect = this.onConnect.bind(this);
@@ -222,6 +228,10 @@ export class TlsSocket {
 	}
 
 	protected closed(connection: forge.tls.TlsConnection) {
+		if (this.listeners.onClose) {
+			this.listeners.onClose();
+		}
+
 		this.log('TLS connection closed');
 		this.closeInternal();
 	}

@@ -1,9 +1,25 @@
-import { CertificateOnlyTlsSocket } from '../lib/cert-socket';
+import * as forge from 'node-forge';
+
+import { fetchCertificate } from '../lib/cert-socket';
+import { parseDeviceId } from '../lib/device-id';
 
 chrome.app.runtime.onLaunched.addListener(() => {
-	const socket = new CertificateOnlyTlsSocket();
+	fetchCertificate('192.168.1.200', 22000)
+		.then(
+			(cert) => {
+				console.log(
+					'Certificate PEM:\n' +
+					'-----BEGIN CERTIFICATE-----\n' +
+					forge.util.encode64(cert.bytes()) + '\n' +
+					'-----END CERTIFICATE-----'
+				);
 
-	socket.connect('192.168.1.200', 22000);
+				console.log('Device ID: ' + parseDeviceId(cert));
+			},
+			(error) => {
+				console.error(error);
+			}
+		);
 
 	// chrome.sockets.tcp.create(
 	// 	{ name: 'syncthing' },
