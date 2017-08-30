@@ -173,7 +173,7 @@ export class TlsSocket {
 		this.closeInternal();
 	}
 
-	protected verify(connection: forge.tls.TlsConnection, verified: boolean, depth: number, certs: forge.tls.Certificate[]) {
+	protected verify(connection: forge.tls.TlsConnection, verified: boolean, depth: number, certs: forge.pki.Certificate[]) {
 		return true;
 	}
 

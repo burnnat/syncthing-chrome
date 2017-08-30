@@ -1,5 +1,7 @@
 import * as forge from 'node-forge';
-import { TlsSocket } from '../lib/socket';
+
+import { TlsSocket } from './socket';
+import { parseDeviceId } from './device-id';
 
 const internal = (forge.tls as any).internal;
 const handlers = (forge.tls as any).handlers;
@@ -58,7 +60,7 @@ interface ExtendedTlsConnection extends forge.tls.TlsConnection {
 	ecPointFormats: ECPointFormat[];
 	supportedGroups: SupportedGroup[];
 
-	// Server certificates.
+	// Server certificates in DER form.
 	certs: forge.util.ByteBuffer[];
 }
 
@@ -283,5 +285,20 @@ export class CertificateOnlyTlsSocket extends TlsSocket {
 		this.tls.version = forge.tls.Versions.TLS_1_2;
 		this.tls.ecPointFormats = SYNCTHING_EC_POINT_FORMATS;
 		this.tls.supportedGroups = SYNCTHING_SUPPORTED_GROUPS;
+	}
+
+	protected closed(connection: ExtendedTlsConnection) {
+		super.closed(connection);
+
+		const cert = connection.certs[0];
+
+		console.log(
+			'Certificate PEM:\n' +
+			'-----BEGIN CERTIFICATE-----\n' +
+			forge.util.encode64(cert.bytes()) + '\n' +
+			'-----END CERTIFICATE-----'
+		);
+
+		console.log('Device ID: ' + parseDeviceId(cert));
 	}
 }

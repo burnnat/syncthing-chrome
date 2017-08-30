@@ -68,6 +68,7 @@ declare module "node-forge" {
             version: number;
             serialNumber: string;
             signature: any;
+            signatureOid: string;
             siginfo: any;
             validity: {
                 notBefore: Date;
@@ -90,6 +91,7 @@ declare module "node-forge" {
             md: any;
         }
 
+        function createCertificate(): Certificate;
         function certificateFromAsn1(obj: asn1.Asn1, computeHash?: boolean): Certificate;
 
         function decryptRsaPrivateKey(pem: PEM, passphrase?: string): Key;
@@ -142,11 +144,25 @@ declare module "node-forge" {
             value: Asn1[];
         }
 
+        interface Asn1Validator {
+            name: string;
+            tagClass?: Class;
+            type?: Type;
+            constructed?: boolean;
+            optional?: boolean;
+            value?: Asn1Validator[];
+            capture?: string;
+            captureAsn1?: string;
+            captureBitStringContents?: string;
+            captureBitStringValue?: string;
+        }
+
         function create(tagClass: Class, type: Type, constructed: boolean, value: string | Asn1[]): Asn1;
         function fromDer(bytes: Bytes | util.ByteBuffer, strict?: boolean): Asn1;
         function toDer(obj: Asn1): util.ByteBuffer;
         function oidToDer(oid: OID): util.ByteStringBuffer;
         function derToOid(der: util.ByteStringBuffer): OID;
+        function validate(obj: Asn1, validator: Asn1Validator, capture: object, errors: string[]): boolean;
     }
 
     namespace util {
@@ -440,8 +456,6 @@ declare module "node-forge" {
             TLS_RSA_WITH_AES_256_CBC_SHA: CipherSuite;
         };
 
-        interface Certificate {}
-
         interface CertificateRequest {
             certificate_types: util.ByteBuffer,
             certificate_authorities: util.ByteBuffer
@@ -453,9 +467,9 @@ declare module "node-forge" {
             cipherSuite: CipherSuite;
             compressionMethod: CompressionMethod;
             clientHelloVersion: TlsVersion;
-            serverCertificate: Certificate;
+            serverCertificate: pki.Certificate;
             certificateRequest: CertificateRequest;
-            clientCertificate: Certificate;
+            clientCertificate: pki.Certificate;
             sp: SecurityParameters;
             md5: md.MessageDigest;
             sha1: md.MessageDigest;
@@ -478,8 +492,6 @@ declare module "node-forge" {
 
         function createSessionCache(cache: SessionMap, capacity: number): SessionCache;
 
-        type Key = any;
-
         interface TlsError {
             message: string;
             send: boolean;
@@ -492,15 +504,15 @@ declare module "node-forge" {
         interface AllTlsConnectionOptions {
             server: boolean;
             sessionId: string;
-            caStore: Certificate[];
+            caStore: pki.Certificate[];
             sessionCache: SessionCache;
             cipherSuites: CipherSuite[];
             connected(connection: TlsConnection): void;
             virtualHost: string;
             verifyClient: boolean | 'optional';
-            verify(connection: TlsConnection, verified: boolean, depth: number, certs: Certificate[]): boolean;
-            getCertificate(connection: TlsConnection, hint: any): Certificate | Certificate[];
-            getPrivateKey(connection: TlsConnection, cert: Certificate): Key;
+            verify(connection: TlsConnection, verified: boolean, depth: number, certs: pki.Certificate[]): boolean;
+            getCertificate(connection: TlsConnection, hint: any): pki.Certificate | pki.Certificate[];
+            getPrivateKey(connection: TlsConnection, cert: pki.Certificate): pki.Key;
             getSignature(connection: TlsConnection, bytes: Bytes, callback: (connection: TlsConnection, bytes: Bytes) => void): void;
             tlsDataReady(connection: TlsConnection): void;
             dataReady(connection: TlsConnection): void;
