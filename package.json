@@ -15,11 +15,17 @@
 	},
 	"dependencies": {
 		"base32.js": "^0.1.0",
-		"node-forge": "^0.7.1"
+		"material-ui": "^1.0.0-beta.6",
+		"node-forge": "^0.7.1",
+		"react": "^15.6.1",
+		"react-dom": "^15.6.1"
 	},
 	"devDependencies": {
 		"@types/chrome": "~0.0.47",
 		"@types/jquery": "~3.2.6",
+		"@types/material-ui": "^0.18.0",
+		"@types/react": "^16.0.5",
+		"@types/react-dom": "^15.5.4",
 		"crx": "^3.2.1",
 		"ts-loader": "~2.2.2",
 		"typescript": "~2.4.1",

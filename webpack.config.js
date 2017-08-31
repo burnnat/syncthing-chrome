@@ -14,7 +14,8 @@ const paths = {
 const config = {
 	context: paths.source,
 	entry: {
-		background: './app/background.ts'
+		app: './app.ts',
+		background: './background.ts'
 	},
 	output: {
 		path: paths.output,

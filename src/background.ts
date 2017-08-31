@@ -1,7 +1,7 @@
 import * as forge from 'node-forge';
 
-import { fetchCertificate } from '../lib/cert-socket';
-import { parseDeviceId } from '../lib/device-id';
+import { fetchCertificate } from './lib/cert-socket';
+import { parseDeviceId } from './lib/device-id';
 
 chrome.app.runtime.onLaunched.addListener(() => {
 	fetchCertificate('192.168.1.200', 22000)
@@ -45,10 +45,10 @@ chrome.app.runtime.onLaunched.addListener(() => {
 	// 	}
 	// );
 
-	// chrome.app.window.create('window.html', {
-	// 	outerBounds: {
-	// 		width: 400,
-	// 		height: 500
-	// 	}
-	// });
+	chrome.app.window.create('app.html', {
+		outerBounds: {
+			width: 600,
+			height: 500
+		}
+	});
 });

@@ -9,7 +9,9 @@
 		}
 	},
 	"icons": {
-		"16": "icon.png"
+		"16": "assets/icon-16.png",
+		"32": "assets/icon-32.png",
+		"128": "assets/icon-128.png"
 	},
 	"sockets": {
 		"tcp": {
