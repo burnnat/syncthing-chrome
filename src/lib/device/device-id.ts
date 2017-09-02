@@ -1,8 +1,10 @@
 import * as forge from 'node-forge';
 import * as base32 from 'base32.js';
+
+import { DeviceId } from 'common/types';
 import * as luhn from './luhn';
 
-export function parseDeviceId(der: forge.util.ByteBuffer): string {
+export function parseDeviceId(der: forge.util.ByteBuffer): DeviceId {
 	const md = forge.md.sha256.create();
 
 	md.update(der.bytes());

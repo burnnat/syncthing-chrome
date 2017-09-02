@@ -11,6 +11,8 @@ const paths = {
 	output: resolve('dist/js')
 }
 
+const resolveSrc = (relative) => path.resolve(paths.source, relative);
+
 const config = {
 	context: paths.source,
 	entry: {
@@ -41,7 +43,12 @@ const config = {
 		]
 	},
 	resolve: {
-		extensions: ['.ts', '.tsx', '.js']
+		extensions: ['.ts', '.tsx', '.js'],
+		alias: {
+			'app': resolveSrc('app'),
+			'common': resolveSrc('common'),
+			'lib': resolveSrc('lib')
+		}
 	},
 	resolveLoader: {
 		alias: {

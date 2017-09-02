@@ -7,6 +7,16 @@
         "sourceMap": false,
         "rootDir": "src",
         "outDir": "dist/js",
+        "baseUrl": "src",
+        "paths": {
+            "*": [
+                "../type-overrides/*",
+                "*"
+            ],
+            "app/*": ["app/*"],
+            "common/*": ["common/*"],
+            "lib/*": ["lib/*"]
+        },
         "noEmitOnError": true
     }
 }

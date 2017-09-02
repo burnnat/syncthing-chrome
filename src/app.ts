@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import jss from 'jss';
 
-import App from './app/App';
+import Root from 'app/components/Root';
 
 const styles = {
 	body: {
@@ -17,7 +17,7 @@ document.addEventListener(
 		document.body.className = classes.body;
 
 		ReactDOM.render(
-			React.createElement(App),
+			React.createElement(Root),
 			document.getElementById('root')
 		);
 	}
