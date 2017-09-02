@@ -33,14 +33,24 @@ const styles = (theme) => ({
 interface AppProps {
 	classes: {
 		[name: string]: string
-	},
+	};
 
-	devices: Device[],
+	devices: Device[];
 
-	onConnect: () => void
+	onLookupDevice: () => void;
+	onDownloadCert: () => void;
+	onConnect: () => void;
+	onError: (error: any) => void;
 }
 
 class App extends React.Component<AppProps> {
+
+	constructor(props) {
+		super(props);
+
+		this.handleDownloadCert = this.handleDownloadCert.bind(this);
+	}
+
 	render() {
 		const css = this.props.classes;
 
@@ -57,6 +67,18 @@ class App extends React.Component<AppProps> {
 					<Button
 						className={css.button}
 						raised={true}
+						onClick={this.props.onLookupDevice}>
+						Lookup Device
+					</Button>
+					<Button
+						className={css.button}
+						raised={true}
+						onClick={this.handleDownloadCert}>
+						Download Certificate
+					</Button>
+					<Button
+						className={css.button}
+						raised={true}
 						onClick={this.props.onConnect}>
 						Connect to Server
 					</Button>
@@ -69,6 +91,35 @@ class App extends React.Component<AppProps> {
 	renderDevices() {
 		return this.props.devices.map(
 			(device) => <DeviceInfo key={device.id} device={device} />
+		);
+	}
+
+	handleDownloadCert() {
+		const device = this.props.devices[0];
+
+		chrome.fileSystem.chooseEntry(
+			{
+				type: 'saveFile',
+				suggestedName: device.id.substring(0, 7) + '.pem',
+				accepts: [
+					{
+						description: 'PEM Certificate (*.pem; *.crt)',
+						mimeTypes: ['application/x-pem-file'],
+						extensions: ['pem', 'crt']
+					}
+				]
+			},
+			(entry: FileEntry) => {
+				entry.createWriter(
+					(writer) => writer.write(
+						new Blob(
+							[this.props.devices[0].cert],
+							{ type: 'application/x-pem-file' }
+						)
+					),
+					this.props.onError
+				);
+			}
 		);
 	}
 }
